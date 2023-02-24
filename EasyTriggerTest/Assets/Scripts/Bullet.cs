@@ -30,5 +30,16 @@ public class Bullet : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+        if (collision.gameObject.tag == "Enemy" && shooter.tag == "Player")
+        {
+            collision.gameObject.GetComponent<EnemyMovement>().health -= 1;
+            Destroy(gameObject);
+        }
+        else if (collision.gameObject.tag == "Player" && shooter.tag == "Enemy")
+        {
+            collision.gameObject.GetComponent<PlayerMovement>().health -= 1;
+            Destroy(gameObject);
+        }
     }
 }
