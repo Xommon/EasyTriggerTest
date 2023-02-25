@@ -16,11 +16,11 @@ public class Bullet : MonoBehaviour
     {
         if (facingRight)
         {
-            transform.position += new Vector3(10, 0);
+            transform.position += new Vector3(7, 0);
         }
         else
         {
-            transform.position += new Vector3(-10, 0);
+            transform.position += new Vector3(-7, 0);
         }
     }
 

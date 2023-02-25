@@ -122,6 +122,7 @@ public class PlayerMovement : MonoBehaviour
             if (Input.GetKeyUp(KeyCode.Space))
             {
                 hiding = false;
+                sr.sortingOrder = 4;
                 animator.SetInteger("state", 0);
             }
         }
@@ -139,6 +140,7 @@ public class PlayerMovement : MonoBehaviour
         {
             // Hide
             hiding = true;
+            sr.sortingOrder = 2;
         }
     }
 }
