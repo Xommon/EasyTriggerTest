@@ -35,10 +35,7 @@ public class Player {
 
 
         // Player logic here
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            Debug.Log("Test");
-        }
+
 
         // temp logic :)
         //------------------------------------------------------------
