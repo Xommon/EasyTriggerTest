@@ -51,7 +51,8 @@ public class Gfx : MonoBehaviour
 
         cam = main.cam;
 		cam.pixelRect = new Rect(0, 0, screenWidth, screenHeight);
-		cam.orthographicSize = screenHeight / 2;
+        //cam.orthographicSize = screenHeight / 2;
+        cam.orthographicSize = 190;
 		cam.transform.position = new Vector3(screenWidth / 2, -screenHeight / 2, -10f);
 
         // --------------------------------------------------------------------------------
@@ -65,7 +66,27 @@ public class Gfx : MonoBehaviour
 
         levelSprites = new Dictionary<string, Sprite[]>();
 
-        MakeGameObject("Level1", Resources.Load<Sprite>("Level/Level"),0,0,"Level");
+        GameObject newLevel = MakeGameObject("Level1", Resources.Load<Sprite>("Level/Level"),0,0,"Level");
+        for (int i = 0; i < 3; i++)
+        {
+            BoxCollider2D newBc = newLevel.AddComponent<BoxCollider2D>();
+
+            switch (i)
+            {
+                case 0:
+                    newBc.offset = new Vector2(198.5775f, -824.0011f);
+                    break;
+                case 1:
+                    newBc.offset = new Vector2(889.4f, -824.0011f);
+                    break;
+                case 2:
+                    newBc.offset = new Vector2(541.4f, -888f);
+                    break;
+            }
+
+            newBc.size = new Vector2(402.841f, 399.9979f);
+        }
+        newLevel.layer = 6;
 
         background = MakeGameObject("Background", Resources.Load<Sprite>("Level/Background"),screenWidth/2/myRes, screenHeight/2/myRes,"Background");
         SetParent(background, null);

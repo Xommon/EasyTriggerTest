@@ -87,12 +87,20 @@ public class Game : MonoBehaviour {
 
 		if (Input.GetKeyDown(KeyCode.LeftArrow))  { leftKey   = true; }
         if (Input.GetKeyUp(KeyCode.LeftArrow))    { leftKey   = false; }
+        if (Input.GetKeyDown(KeyCode.A))          { leftKey   = true; }
+        if (Input.GetKeyUp(KeyCode.A))            { leftKey   = false; }
         if (Input.GetKeyDown(KeyCode.RightArrow)) { rightKey  = true; }
         if (Input.GetKeyUp(KeyCode.RightArrow))   { rightKey  = false; }
+        if (Input.GetKeyDown(KeyCode.D))          { rightKey  = true; }
+        if (Input.GetKeyUp(KeyCode.D))            { rightKey  = false; }
         if (Input.GetKeyDown(KeyCode.UpArrow))    { jumpKey   = true; }
         if (Input.GetKeyUp(KeyCode.UpArrow))      { jumpKey   = false; }
+        if (Input.GetKeyDown(KeyCode.W))          { jumpKey   = true; }
+        if (Input.GetKeyUp(KeyCode.W))            { jumpKey   = false; }
         if (Input.GetKeyDown(KeyCode.DownArrow))  { duckKey   = true; }
         if (Input.GetKeyUp(KeyCode.DownArrow))    { duckKey   = false; }
+        if (Input.GetKeyDown(KeyCode.S))          { duckKey   = true; }
+        if (Input.GetKeyUp(KeyCode.S))            { duckKey   = false; }
         if (Input.GetKeyDown(KeyCode.M))          { jumpKey   = true; }
         if (Input.GetKeyUp(KeyCode.M))            { jumpKey   = false; }
         if (Input.GetKeyDown(KeyCode.N))          { shootKey  = true; }
@@ -103,7 +111,7 @@ public class Game : MonoBehaviour {
         if (rightKey) { playerHorizontal+=1; }
 
         playerVertical = 0;
-        if (jumpKey) { playerVertical-=1; }
+        if (jumpKey) { playerVertical -=1; }
         if (duckKey) { playerVertical+=1; }
 
         playerShoot = false;
