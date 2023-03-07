@@ -17,7 +17,7 @@ public class Player {
 
     public Rigidbody2D rb;
     public float movementSpeed;
-    public bool onGround;
+    private bool onGround, shooting, ducking, meleeing, hiding;
     [SerializeField] private LayerMask groundLayerMask;
     public SpriteRenderer sr;
     public Vector2 velocity;
@@ -25,10 +25,8 @@ public class Player {
     public BoxCollider2D bc;
     public float offset;
     public int health = 6;
-    private bool shooting;
     public GameObject bullet;
-    private bool meleeing;
-    private bool hiding;
+    private float previousX;
 
     public Player (Main inMain) {
 
@@ -61,6 +59,22 @@ public class Player {
 
     public void FrameEvent(int inMoveX, int inMoveY, bool inShoot) {
 
+        // Update previous position
+        previousX = x;
+
+        // Check if on ground
+        onGround = Physics2D.BoxCast(bc.bounds.center, bc.bounds.size, 0.0f, Vector2.down, 0.01f, groundLayerMask);
+
+        // Ducking
+        if ((Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow)) && onGround)
+        {
+            ducking = true;
+        }
+        else
+        {
+            ducking = false;
+        }
+
         // Flip character
         if (Input.GetAxis("Horizontal") > 0 && !shooting && !meleeing && !hiding)
         {
@@ -71,8 +85,23 @@ public class Player {
             sr.flipX = true;
         }
 
+        // Find direction
+        int direction;
+        if (sr.flipX)
+        {
+            direction = -1;
+        }
+        else
+        {
+            direction = 1;
+        }
+
         // Animations
-        if ((Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow)) && onGround)
+        if (shooting)
+        {
+            animator.SetInteger("state", 5);
+        }
+        else if (ducking)
         {
             animator.SetInteger("state", 4);
         }
@@ -94,16 +123,23 @@ public class Player {
         }
 
         // Check side collisions
-        if (Physics2D.BoxCast(bc.bounds.center, bc.bounds.size/2, 0.0f, Vector2.left, 1f, groundLayerMask) ||
-            Physics2D.BoxCast(bc.bounds.center, bc.bounds.size / 2, 0.0f, Vector2.right, 1f, groundLayerMask))
+        if (Physics2D.BoxCast(bc.bounds.center, bc.bounds.size/2, 0.0f, Vector2.right * direction, 10f, groundLayerMask))
         {
-            //inMoveX = 0;
+            x = previousX - (0.0025f * direction);
+        }
+        else if (!ducking && !shooting)
+        {
+            x = x + inMoveX;
         }
 
-        // Check if on ground
-        //onGround = (velocity.y == 0);
-        onGround = Physics2D.BoxCast(bc.bounds.center, bc.bounds.size, 0.0f, Vector2.down, 1f, groundLayerMask);
-        Debug.Log(velocity);
+        if (onGround)
+        {
+            //RaycastHit2D hit = Physics2D.BoxCast(bc.bounds.center, bc.bounds.size, 0.0f, Vector2.down, 0.5f, groundLayerMask);
+            //y -= 0.1f;
+            //y = hit.collider.transform.position.y;
+            //Debug.DrawRay(bc.bounds.center, Vector2.down, Color.red, 5.0f);
+            //y = Physics2D.Raycast();
+        }
 
         // Gravity
         if (onGround)
@@ -117,11 +153,26 @@ public class Player {
         }
 
         // Jump
-        if ((Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.M)) && onGround)
+        if ((Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.M)) && onGround && !shooting)
         {
             velocity.y = -3.75f;
             y += velocity.y;
-            animator.SetInteger("state", 2);
+        }
+
+        // Shoot
+        if (inShoot && onGround && !ducking && !shooting)
+        {
+            shooting = true;
+            snd.PlayAudioClip("Gun");
+
+            // Create bullet
+            GameObject bullet = gfx.MakeGameObject("Bullet", sprites[36], x + 11, y - 25, "Player");
+            bullet.AddComponent(typeof(Bullet)).GetComponent<Bullet>().direction = direction;
+        }
+
+        if (shooting && (animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1))
+        {
+            shooting = false;
         }
 
         /*// Check if player is on ground
@@ -225,27 +276,11 @@ public class Player {
             }
         }*/
 
-        // temp logic :)
-        //------------------------------------------------------------
-        if (!((Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow)) && onGround))
-        {
-            x = x + inMoveX;
-        }
-        //------------------------------------------------------------
-
-
-
         UpdatePos();
-
-        if (inShoot) {
-            snd.PlayAudioClip("Gun");
-        }
-
     }
 
-
-    void UpdatePos() {
-
+    void UpdatePos() 
+    {
         playerPosition.x = x;
         playerPosition.y = -y;
 

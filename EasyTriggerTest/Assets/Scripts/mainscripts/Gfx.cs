@@ -80,7 +80,7 @@ public class Gfx : MonoBehaviour
                     newBc.offset = new Vector2(889.4f, -824.0011f);
                     break;
                 case 2:
-                    newBc.offset = new Vector2(541.4f, -888f);
+                    newBc.offset = new Vector2(541.4f, -887.5f);
                     break;
             }
 

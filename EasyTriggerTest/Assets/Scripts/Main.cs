@@ -73,6 +73,4 @@ public class Main : MonoBehaviour {
         game = null;
 
     }
-
-
 }
