@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemy : GeneralObject {
+public class Enemy : GeneralObject
+{
 
     GameObject gameObject;
     Animator animator;
@@ -10,8 +11,8 @@ public class Enemy : GeneralObject {
     int health = 3;
     LayerMask bulletLayerMask;
     Player player;
-    bool shooting;
-
+    int cooldown = 0;
+    int targetCooldown = 0;
 
     public Enemy(Main inMain, int inX, int inY, Player _player) {
 
@@ -38,7 +39,10 @@ public class Enemy : GeneralObject {
 
     public override bool FrameEvent() 
     {
-        // Show death
+        // Increase cooldown
+        cooldown++;
+
+        // Death
         if (health <= 0)
         {
             animator.SetInteger("state", 6);
@@ -54,7 +58,24 @@ public class Enemy : GeneralObject {
 
         // Phases and Behaviours
         float distanceFromPlayer = Vector2.Distance(new Vector2(x, y), new Vector2(player.x, player.y));
-        if (distanceFromPlayer > 120)
+        if (targetCooldown > 0 && cooldown - targetCooldown >= 10)
+        {
+            cooldown = 0;
+            targetCooldown = 0;
+        }
+
+        if (animator.GetInteger("state") == 5 && cooldown - targetCooldown < 10)
+        {
+            x += 0;
+        }
+        else if (distanceFromPlayer <= 120 && Mathf.Abs(player.y - y) < 10 && cooldown > 250)
+        {
+            // Combat
+            SetDirection((int)((player.x - x) / Mathf.Abs(player.x - x)));
+            Shoot();
+            x += 0;
+        }
+        else
         {
             // Patrol
             animator.SetInteger("state", 1);
@@ -64,28 +85,30 @@ public class Enemy : GeneralObject {
                 SetDirection(-direction);
             }
         }
-        else if (distanceFromPlayer <= 120 && distanceFromPlayer >= 100)
-        {
-            // Investigate
-            animator.SetInteger("state", 0);
-            SetDirection((int)((player.x - x) / Mathf.Abs(player.x - x)));
-            x += 0;
-        }
-        else if (distanceFromPlayer < 100)
-        {
-            // Combat
-            //animator.SetInteger("state", 0);
 
-            SetDirection((int)((player.x - x) / Mathf.Abs(player.x - x)));
-            x += 0;
-            Shoot();
-        }
+            /*if ((distanceFromPlayer > 135 || (Mathf.Abs(player.y - y) >= 10)) && cooldown < 250 && !shooting)
+            {
+                // Patrol
+                animator.SetInteger("state", 1);
+                x = x + 0.8f * direction;
+                if ((direction == 1 && x > 600) || (direction == -1 && x < 480))
+                {
+                    SetDirection(-direction);
+                }
+            }
+            else if (cooldown >= 250 && distanceFromPlayer <= 135 && (Mathf.Abs(player.y - y) < 10))
+            {
+                // Combat
+                SetDirection((int)((player.x - x) / Mathf.Abs(player.x - x)));
+                Shoot();
+                x += 0;
+            }*/
 
         // Shooting cooldown
-        if (shooting && (animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1))
+        /*if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1 && cooldown > 250 && animator.GetInteger("state") == 5)
         {
-            shooting = false;
-        }
+            cooldown = 0;
+        }*/
 
 
         UpdatePos();
@@ -94,12 +117,12 @@ public class Enemy : GeneralObject {
         return isOK;
     }
 
-    void Shoot()
+    public void Shoot()
     {
-        if (!shooting)
+        if (animator.GetInteger("state") < 5)
         {
-            shooting = true;
-            snd.PlayAudioClip("Gun", true);
+            targetCooldown = cooldown;
+            snd.PlayAudioClip("Gun", false);
             animator.SetInteger("state", 5);
         }
     }

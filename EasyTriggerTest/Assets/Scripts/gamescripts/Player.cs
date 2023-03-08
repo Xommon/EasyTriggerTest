@@ -150,7 +150,7 @@ public class Player {
         }
 
         // Jump
-        if ((Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.M)) && onGround && !shooting)
+        if ((Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.M)) && onGround && !shooting && !ducking)
         {
             velocity.y = -3.75f;
             y += velocity.y;
