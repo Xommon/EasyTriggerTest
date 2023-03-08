@@ -23,9 +23,10 @@ public class Player {
     public Animator animator;
     public BoxCollider2D bc;
     public float offset;
-    public int health = 6;
+    public int health = 4;
     public GameObject bullet;
     private float previousX;
+    private Healthbar healthbar;
 
     public Player (Main inMain) {
 
@@ -50,6 +51,8 @@ public class Player {
         bc.offset = new Vector2(-0.536037445f, 18.5f);
         bc.size = new Vector2(15.7777481f, 37);
         sr = gameObject.GetComponent<SpriteRenderer>();
+        healthbar = UnityEngine.GameObject.FindObjectOfType<Healthbar>();
+        healthbar.player = this;
 
         movementSpeed = 10;
         velocity = Vector2.zero;
