@@ -19,13 +19,17 @@ public class Snd : MonoBehaviour {
 		audioClips = new Dictionary<string, AudioClip>();
 		
 		AddAudioClip("Gun", "Audio/Gun");
+		AddAudioClip("Music", "Audio/Music");
+		AddAudioClip("Jump", "Audio/Jump");
+		AddAudioClip("Land", "Audio/Land");
 
 	}
 
 
-    public void PlayAudioClip(string inVer) {
+    public void PlayAudioClip(string inVer, bool _loop) {
 
         audioSource.PlayOneShot(audioClips[inVer]);
+        audioSource.loop = _loop;
 
     }
 

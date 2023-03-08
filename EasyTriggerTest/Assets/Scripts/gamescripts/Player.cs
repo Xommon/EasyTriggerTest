@@ -12,8 +12,7 @@ public class Player {
     GameObject gameObject;
     Vector3 playerPosition;
 
-    float x;
-    float y;
+    public float x, y;
 
     public Rigidbody2D rb;
     public float movementSpeed;
@@ -55,6 +54,7 @@ public class Player {
         movementSpeed = 10;
         velocity = Vector2.zero;
         groundLayerMask = LayerMask.GetMask("Ground");
+        gameObject.layer = 3;
     }
 
     public void FrameEvent(int inMoveX, int inMoveY, bool inShoot) {
@@ -64,6 +64,12 @@ public class Player {
 
         // Check if on ground
         onGround = Physics2D.BoxCast(bc.bounds.center, bc.bounds.size, 0.0f, Vector2.down, 0.01f, groundLayerMask);
+
+        // Land
+        if (animator.GetInteger("state") == 3 && onGround)
+        {
+            snd.PlayAudioClip("Land", false);
+        }
 
         // Ducking
         if ((Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow)) && onGround)
@@ -132,15 +138,6 @@ public class Player {
             x = x + inMoveX;
         }
 
-        if (onGround)
-        {
-            //RaycastHit2D hit = Physics2D.BoxCast(bc.bounds.center, bc.bounds.size, 0.0f, Vector2.down, 0.5f, groundLayerMask);
-            //y -= 0.1f;
-            //y = hit.collider.transform.position.y;
-            //Debug.DrawRay(bc.bounds.center, Vector2.down, Color.red, 5.0f);
-            //y = Physics2D.Raycast();
-        }
-
         // Gravity
         if (onGround)
         {
@@ -157,19 +154,20 @@ public class Player {
         {
             velocity.y = -3.75f;
             y += velocity.y;
+            snd.PlayAudioClip("Jump", false);
         }
 
         // Shoot
         if (inShoot && onGround && !ducking && !shooting)
         {
             shooting = true;
-            snd.PlayAudioClip("Gun");
+            snd.PlayAudioClip("Gun", true);
 
             // Create bullet
-            GameObject bullet = gfx.MakeGameObject("Bullet", sprites[36], x + 11, y - 25, "Player");
-            bullet.AddComponent(typeof(Bullet)).GetComponent<Bullet>().direction = direction;
+            game.AddLevelObject(new Bullet(main, (int)(x + (16 * direction)), (int)(y - 27), true, direction));
         }
 
+        // Shooting cooldown
         if (shooting && (animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1))
         {
             shooting = false;

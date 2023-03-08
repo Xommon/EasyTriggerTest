@@ -1,13 +1,19 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
 public class Enemy : GeneralObject {
 
     GameObject gameObject;
     Animator animator;
-    int phase = 1; // 0 = idle, 1 = walking, 2 = shooting
+    BoxCollider2D bc;
+    int health = 3;
+    LayerMask bulletLayerMask;
+    Player player;
+    bool shooting;
 
 
-    public Enemy(Main inMain, int inX, int inY) {
+    public Enemy(Main inMain, int inX, int inY, Player _player) {
 
         SetGeneralVars(inMain, inX, inY);
 
@@ -20,48 +26,82 @@ public class Enemy : GeneralObject {
 
         SetDirection(-1);
 
+        bc = gameObject.AddComponent<BoxCollider2D>();
+
+        player = _player;
+
+        gameObject.layer = 3;
+        bulletLayerMask = 7;
     }
 
 
 
-    public override bool FrameEvent() {
-
-
-        // enemy logic here
-        animator.SetInteger("state", phase);
-        
-        //if ()
-
-        // temp logic :)
-        //------------------------------------------------------------
-        if (phase == 0)
+    public override bool FrameEvent() 
+    {
+        // Show death
+        if (health <= 0)
         {
-            // Idle
-
+            animator.SetInteger("state", 6);
+            return isOK;
         }
-        else if (phase == 1)
+
+        // Hit by bullet
+        if (Physics2D.BoxCast(bc.bounds.center, bc.bounds.size / 2, 0.0f, Vector2.right * direction, 10f, bulletLayerMask))
         {
-            // Walk
+            health--;
+            Debug.Log("Enemy hit");
+        }
+
+        // Phases and Behaviours
+        float distanceFromPlayer = Vector2.Distance(new Vector2(x, y), new Vector2(player.x, player.y));
+        if (distanceFromPlayer > 120)
+        {
+            // Patrol
+            animator.SetInteger("state", 1);
             x = x + 0.8f * direction;
             if ((direction == 1 && x > 600) || (direction == -1 && x < 480))
             {
                 SetDirection(-direction);
             }
         }
-        else if (phase == 2)
+        else if (distanceFromPlayer <= 120 && distanceFromPlayer >= 100)
         {
-            // Shoot
-
+            // Investigate
+            animator.SetInteger("state", 0);
+            SetDirection((int)((player.x - x) / Mathf.Abs(player.x - x)));
+            x += 0;
         }
-        //------------------------------------------------------------
+        else if (distanceFromPlayer < 100)
+        {
+            // Combat
+            //animator.SetInteger("state", 0);
 
+            SetDirection((int)((player.x - x) / Mathf.Abs(player.x - x)));
+            x += 0;
+            Shoot();
+        }
+
+        // Shooting cooldown
+        if (shooting && (animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1))
+        {
+            shooting = false;
+        }
 
 
         UpdatePos();
 
 
         return isOK;
+    }
 
+    void Shoot()
+    {
+        if (!shooting)
+        {
+            shooting = true;
+            snd.PlayAudioClip("Gun", true);
+            animator.SetInteger("state", 5);
+        }
     }
 
 
