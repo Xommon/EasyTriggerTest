@@ -23,11 +23,11 @@ public class Healthbar : MonoBehaviour
         {
             if (i > player.health)
             {
-                hitpoints[i].sizeDelta = new Vector3(7, 3, 0);
+                hitpoints[i - 1].sizeDelta = new Vector3(7, 3, 0);
             }
             else
             {
-                hitpoints[i].sizeDelta = new Vector3(7, 22, 0);
+                hitpoints[i - 1].sizeDelta = new Vector3(7, 22, 0);
             }
         }
     }

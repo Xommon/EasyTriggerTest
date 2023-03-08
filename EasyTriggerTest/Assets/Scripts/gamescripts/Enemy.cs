@@ -121,6 +121,7 @@ public class Enemy : GeneralObject
     {
         if (animator.GetInteger("state") < 5)
         {
+            game.AddLevelObject(new Bullet(main, (int)(x + (16 * direction)), (int)(y - 27), false, direction));
             targetCooldown = cooldown;
             snd.PlayAudioClip("Gun", false);
             animator.SetInteger("state", 5);
