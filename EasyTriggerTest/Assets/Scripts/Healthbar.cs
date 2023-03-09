@@ -4,13 +4,9 @@ using UnityEngine;
 
 public class Healthbar : MonoBehaviour
 {
-    RectTransform[] hitpoints;
+    public RectTransform[] hitpoints;
     public Player player;
-
-    private void Start()
-    {
-        hitpoints = GetComponentsInChildren<RectTransform>();
-    }
+    public int testHP = 6;
 
     private void Update()
     {
@@ -19,9 +15,9 @@ public class Healthbar : MonoBehaviour
 
     public void UpdateScore()
     {
-        for (int i = 6; i >= 0; i--)
+        for (int i = 6; i > 0; i--)
         {
-            if (i > player.health)
+            if (i > testHP)
             {
                 hitpoints[i - 1].sizeDelta = new Vector3(7, 3, 0);
             }
