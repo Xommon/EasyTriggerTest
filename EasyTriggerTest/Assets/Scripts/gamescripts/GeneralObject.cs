@@ -25,7 +25,10 @@ public class GeneralObject
     }
 
 	public virtual bool FrameEvent(){ return false; }
-    public virtual void Kill() {}
+    public virtual void Kill() 
+    {
+        
+    }
 
 	
 }

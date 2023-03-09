@@ -122,7 +122,8 @@ public class Enemy : GeneralObject
 
 
 
-    public override void Kill() {
+    public override void Kill() 
+    {
         animator.SetInteger("state", 6);
     }
 

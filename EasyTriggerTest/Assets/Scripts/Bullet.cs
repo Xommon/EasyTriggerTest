@@ -11,10 +11,8 @@ public class Bullet : GeneralObject
     LayerMask characterLayerMask;
     LayerMask groundLayerMask;
 
-
     public Bullet(Main inMain, int inX, int inY, bool _shotByPlayer, int _direction)
     {
-
         SetGeneralVars(inMain, inX, inY);
 
         sprites = gfx.GetLevelSprites("Players/Player1");
@@ -29,10 +27,8 @@ public class Bullet : GeneralObject
 
         SetDirection(_direction);
 
-        //UnityEngine.Object.Destroy(gameObject, 3.0f);
+        GameObject.Destroy(gameObject, 4.0f);
     }
-
-
 
     public override bool FrameEvent()
     {
@@ -44,45 +40,26 @@ public class Bullet : GeneralObject
         {
             if (Physics2D.BoxCast(bc.bounds.center, bc.bounds.size, 0.0f, Vector2.zero, 0.0f, characterLayerMask))
             {
-                UnityEngine.GameObject.Destroy(gameObject);
+                GameObject.Destroy(gameObject);
             }
             else if (Physics2D.BoxCast(bc.bounds.center, bc.bounds.size, 0.0f, Vector2.zero, 0.0f, groundLayerMask))
             {
-                UnityEngine.GameObject.Destroy(gameObject);
+                GameObject.Destroy(gameObject);
             }
         }
-            /*RaycastHit2D hit = Physics2D.Raycast(bc.bounds.center, Vector2.right * direction, 7.0f);
-            if (shotByPlayer && hit.collider.gameObject.tag == "Enemy")
-            {
-                //hit.collider.gameObject.GetComponent<Enemy>().health--;
-                //Debug.Log("Hit: " + hit.collider.gameObject.name);
-                //UnityEngine.GameObject.Destroy(gameObject);
-            }*/
-            //List<RaycastHit2D> results = new List<RaycastHit2D>();
-            /*var results = 0;
-            //if (Physics2D.BoxCast(bc.bounds.center, bc.bounds.size / 2, 0.0f, Vector2.right * direction, 10f, characterLayerMask))
-            if (Physics2D.BoxCast(bc.bounds.center, bc.bounds.size, 0.0f, Vector2.right * direction, characterLayerMask, results, Mathf.Infinity))
-            {
-                Debug.Log(results);
-                if (!shotByPlayer)
-                {
-                    Debug.Log("Hit enemy!");
-                }
-            }*/
 
-            UpdatePos();
-
+        UpdatePos();
 
         return isOK;
     }
 
-
     void UpdatePos()
     {
-        gfx.SetPos(gameObject, x, y);
+        if (gameObject != null)
+        {
+            gfx.SetPos(gameObject, x, y);
+        }
     }
-
-
 
     void SetDirection(int inDirection)
     {
@@ -92,16 +69,8 @@ public class Bullet : GeneralObject
 
     }
 
-
-
     public override void Kill()
     {
 
     }
-
-
-
-
-
-
 }
