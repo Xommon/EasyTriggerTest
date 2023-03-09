@@ -47,7 +47,11 @@ public class Game : MonoBehaviour {
         AddLevelObject(new Enemy(main, 530, 560, player));
         AddLevelObject(new Enemy(main, 516, 624, player));
 
-        gameStatus  = PLAY;
+        AddLevelObject(new Platform(main, 0, 0, 144, 10, 536, 629, player));
+        AddLevelObject(new Platform(main, 0, 0, 144, 10, 536, 565, player));
+        AddLevelObject(new Platform(main, 0, 0, 32, 10, 672, 629, player));
+
+        gameStatus = PLAY;
 
         snd.PlayAudioClip("Music", true);
     }

@@ -23,9 +23,9 @@ public class Player {
     public Animator animator;
     public BoxCollider2D bc;
     public float offset;
-    public int health = 6;
+    public int health = 600000;
     public GameObject bullet;
-    private float previousX;
+    private float previousX, previousY;
     private Healthbar healthbar;
 
     public Player (Main inMain) {
@@ -61,13 +61,41 @@ public class Player {
         bulletLayerMask = LayerMask.GetMask("Bullet");
     }
 
-    public void FrameEvent(int inMoveX, int inMoveY, bool inShoot) {
+    public void FrameEvent(int inMoveX, int inMoveY, bool inShoot)
+    {
+        // Check if on ground
+        onGround = Physics2D.BoxCast(bc.bounds.center, bc.bounds.size, 0.0f, Vector2.down, 0.1f, groundLayerMask);
+        Debug.Log(velocity.y);
+        /*Debug.DrawRay(gameObject.transform.position, Vector2.down * 50, Color.yellow);
+        if (Physics2D.Raycast(gameObject.transform.position, Vector2.down * 50, 0, groundLayerMask, 0, 0))
+        {
+            onGround = true;
+        }*/
+
+        // Gravity
+        if (onGround)
+        {
+            velocity = Vector2.zero;
+        }
+        else
+        {
+            if (velocity.y < 3.2f)
+            {
+                velocity.y += 0.1f;
+            }
+            y += velocity.y;
+        }
 
         // Update previous position
         previousX = x;
+        previousY = y;
 
-        // Check if on ground
-        onGround = Physics2D.BoxCast(bc.bounds.center, bc.bounds.size, 0.0f, Vector2.down, 0.01f, groundLayerMask);
+        // Dead
+        if (health <= 0)
+        {
+            animator.SetInteger("state", 6);
+            return;
+        }
 
         // Land
         if (animator.GetInteger("state") == 3 && onGround)
@@ -142,17 +170,6 @@ public class Player {
             x = x + inMoveX;
         }
 
-        // Gravity
-        if (onGround)
-        {
-            velocity = Vector2.zero;
-        }
-        else
-        {
-            velocity.y += 0.1f;
-            y += velocity.y;
-        }
-
         // Jump
         if ((Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.M)) && onGround && !shooting && !ducking)
         {
@@ -180,7 +197,14 @@ public class Player {
         // Hit by bullet
         if (Physics2D.BoxCast(bc.bounds.center, bc.bounds.size, 0.0f, Vector2.zero, 0.0f, bulletLayerMask))
         {
-            Debug.Log("Player hit!");
+            if (ducking)
+            {
+                health--;
+            }
+            else
+            {
+                health -= 2;
+            }
         }
 
         UpdatePos();

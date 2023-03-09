@@ -42,7 +42,6 @@ public class Enemy : GeneralObject
         // Death
         if (health <= 0)
         {
-            animator.SetInteger("state", 6);
             Kill();
             return isOK;
         }
@@ -54,7 +53,6 @@ public class Enemy : GeneralObject
         if (Physics2D.BoxCast(bc.bounds.center, bc.bounds.size, 0.0f, Vector2.zero, 0.0f, bulletLayerMask))
         {
             health--;
-            Debug.Log("Enemy hit");
         }
 
         // Phases and Behaviours
@@ -125,6 +123,7 @@ public class Enemy : GeneralObject
     public override void Kill() 
     {
         animator.SetInteger("state", 6);
+        bc.enabled = false;
     }
 
 

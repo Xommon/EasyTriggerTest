@@ -21,6 +21,7 @@ public class Gfx : MonoBehaviour
     private Vector3 levelPos;
 
     public GameObject background;
+    public Platform platform;
 
     public GameObject fadeObject;
     public Sprite blackSprite;

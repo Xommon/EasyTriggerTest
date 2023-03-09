@@ -6,7 +6,6 @@ public class Healthbar : MonoBehaviour
 {
     public RectTransform[] hitpoints;
     public Player player;
-    public int testHP = 6;
 
     private void Update()
     {
@@ -17,7 +16,7 @@ public class Healthbar : MonoBehaviour
     {
         for (int i = 6; i > 0; i--)
         {
-            if (i > testHP)
+            if (i > player.health)
             {
                 hitpoints[i - 1].sizeDelta = new Vector3(7, 3, 0);
             }
