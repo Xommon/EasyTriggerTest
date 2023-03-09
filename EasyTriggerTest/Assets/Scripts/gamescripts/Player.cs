@@ -23,7 +23,7 @@ public class Player {
     public Animator animator;
     public BoxCollider2D bc;
     public float offset;
-    public int health = 600000;
+    public int health = 6;
     public GameObject bullet;
     private float previousX, previousY;
     private Healthbar healthbar;
@@ -65,12 +65,6 @@ public class Player {
     {
         // Check if on ground
         onGround = Physics2D.BoxCast(bc.bounds.center, bc.bounds.size, 0.0f, Vector2.down, 0.1f, groundLayerMask);
-        Debug.Log(velocity.y);
-        /*Debug.DrawRay(gameObject.transform.position, Vector2.down * 50, Color.yellow);
-        if (Physics2D.Raycast(gameObject.transform.position, Vector2.down * 50, 0, groundLayerMask, 0, 0))
-        {
-            onGround = true;
-        }*/
 
         // Gravity
         if (onGround)
@@ -79,7 +73,7 @@ public class Player {
         }
         else
         {
-            if (velocity.y < 3.2f)
+            if (velocity.y < 2.5f)
             {
                 velocity.y += 0.1f;
             }

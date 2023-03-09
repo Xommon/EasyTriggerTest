@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 
 public class Game : MonoBehaviour {
@@ -70,8 +71,7 @@ public class Game : MonoBehaviour {
 
             GoObjects();
 
-        } 
-
+        }
     }
 
 

@@ -26,6 +26,12 @@ public class Platform : GeneralObject
 
     public override bool FrameEvent()
     {
+        if (player.health <= 0)
+        {
+            bc.enabled = true;
+            return isOK;
+        }
+
         if (-player.y <= this.gameObject.transform.localPosition.y && timer >= 0)
         {
             timer = 0;
